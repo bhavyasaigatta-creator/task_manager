@@ -9,9 +9,11 @@ function App() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
+  const BASE_URL = "https://task-manager-backend-lmaf.onrender.com";
+
   // AUTH
   const signup = async () => {
-    await fetch("http://localhost:5000/auth/signup", {
+    await fetch(`${BASE_URL}/auth/signup`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ email, password })
@@ -20,7 +22,7 @@ function App() {
   };
 
   const login = async () => {
-    const res = await fetch("http://localhost:5000/auth/login", {
+    const res = await fetch(`${BASE_URL}/auth/login`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ email, password })
@@ -42,7 +44,7 @@ function App() {
 
   // TASKS
   const fetchTasks = async (userId) => {
-    const res = await fetch(`http://localhost:5000/tasks?userId=${userId}`);
+    const res = await fetch(`${BASE_URL}/tasks?userId=${userId}`);
     const data = await res.json();
     setTasks(data);
   };
@@ -57,12 +59,12 @@ function App() {
   }, []);
 
   const addTask = async () => {
-  if (!title.trim()) {
-    alert("Title is required");
-    return;
-  }
+    if (!title.trim()) {
+      alert("Title is required");
+      return;
+    }
 
-    await fetch("http://localhost:5000/tasks", {
+    await fetch(`${BASE_URL}/tasks`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ title, description, userId: user._id })
@@ -74,12 +76,12 @@ function App() {
   };
 
   const deleteTask = async (id) => {
-    await fetch(`http://localhost:5000/tasks/${id}`, { method: "DELETE" });
+    await fetch(`${BASE_URL}/tasks/${id}`, { method: "DELETE" });
     fetchTasks(user._id);
   };
 
   const toggleStatus = async (task) => {
-    await fetch(`http://localhost:5000/tasks/${task._id}`, {
+    await fetch(`${BASE_URL}/tasks/${task._id}`, {
       method: "PUT",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
@@ -200,11 +202,12 @@ function App() {
           <button onClick={addTask} style={btnPrimary}>Add Task</button>
         </div>
 
-{tasks.length === 0 && (
-  <p style={{ textAlign: "center", marginTop: "20px", color: "#777" }}>
-    No tasks yet 🚀
-  </p>
-)}
+        {tasks.length === 0 && (
+          <p style={{ textAlign: "center", marginTop: "20px", color: "#777" }}>
+            No tasks yet 🚀
+          </p>
+        )}
+
         {/* TASK LIST */}
         {tasks.map((task) => (
           <div key={task._id} style={card}>
